@@ -1,0 +1,220 @@
+<div class="container mt-4">
+  <!-- CARD PRINCIPAL -->
+  <div class="card shadow-sm border-0 rounded-4">
+    <!-- HEADER -->
+    <div class="card-header bg-primary text-white rounded-top-4 ticket-resumen-header">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-1">Ticket # {{ 'TASK-00'+idTicket || 'N/A' }}</h4>
+        <small> Resumen de actividades </small>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-warning px-4" (click)="retornarMenu()">Regresar</button>
+        </div>
+      </div>
+    </div>
+    <!-- BODY -->
+    <div class="card-body p-4">
+      <!-- RESUMEN -->
+      <div class="row g-4">
+        <!-- ACTIVIDADES -->
+        <div class="col-lg-7">
+          <div class="info-card h-100">
+            <h5 class="section-title">Issue/Error/Mejora</h5>
+
+            <table class="table table-borderless align-middle mb-0">
+              <tbody>
+                <tr>
+                  <td class="label-column"><b>Estatus:</b></td>
+                  <td>
+                    <span class="ticket-badge status-abierto">
+                      {{ selectedTicketFromState?.estado || 'N/A' }}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="label-column"><b>Solicita:</b></td>
+                  <td>{{ selectedTicketFromState?.usuario || 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <td class="label-column"><b>Modulo:</b></td>
+                  <td>{{ selectedTicketFromState?.modulo || 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <td class="label-column"><b>Titulo:</b></td>
+                  <td>{{ selectedTicketFromState?.titulo || 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <td class="label-column"><b>Descripción:</b></td>
+                  <td>
+                    {{ selectedTicketFromState?.descripcion || 'N/A' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- INFORMACIÓN -->
+        <div class="col-lg-5">
+          <div class="info-card">
+            <h5 class="section-title">Información - Departamento TI</h5>
+            <table class="table table-borderless align-middle mb-0">
+              <tbody>
+                <tr>
+                  <td class="label-column">Cve Usuario:</td>
+                  <td>
+                    {{ selectedTicketFromState?.asignado || 'N/A' }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="label-column">Nombre:</td>
+                  <td>
+                    {{ selectedTicketFromState?.nomAsignado || 'N/A' }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="label-column">Fecha Inicio</td>
+                  <td>{{ selectedTicketFromState?.finicio || 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <td class="label-column">Fecha Entrega</td>
+                  <td>{{ selectedTicketFromState?.fentrega || 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <td class="label-column">Prioridad</td>
+                  <td>
+                    <span class="badge bg-danger">
+                      {{ selectedTicketFromState?.prioridad || 'N/A' }}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="label-column">Horas invertidas</td>
+                  <td>{{ selectedTicketFromState?.horasInvertidas || '-' }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <button class="btn btn-success px-4" 
+                      (click)="tomarTicket(selectedTicketFromState)"
+                    >
+                      Tomar Ticket</button>
+                  </td>
+                  <td>
+                    @if (
+                      selectedTicketFromState?.estado === 'ABIERTO' ||
+                      selectedTicketFromState?.estado === 'DESARROLLO'
+                    ) {
+                      <button
+                        class="btn btn-warning px-4"
+                        (click)="seleccionarTicketCancelar(selectedTicketFromState)"
+                      >
+                        Cerrar Ticket
+                      </button>
+                    }
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMENTARIOS -->
+      <div class="card shadow-sm border-0 rounded-4 mt-4">
+        <div class="card-header bg-white border-0">
+          <h5 class="fw-bold mb-0">Comentarios</h5>
+        </div>
+        <div class="card-body">
+          <!-- NUEVO COMENTARIO -->
+          <textarea
+            #htmlComentario
+            class="form-control comment-textarea"
+            rows="3"
+            placeholder="Escribe un comentario..."
+            [(ngModel)]="comentario"
+          ></textarea>
+          <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-primary px-4" (click)="publicar()">Publicar</button>
+          </div>
+        </div>
+        @for (item of seguimientoTicket(); track $index) {
+          <!-- COMENTARIO -->
+          <div class="comment-item">
+            <div class="d-flex gap-3">
+              <div class="avatar bg-success">{{ item.usuario }}</div>
+              <div class="comment-content">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div>
+                    <span class="fw-semibold"> {{ item.nombre }} </span>
+                    <small class="text-muted ms-2"> </small>
+                  </div>
+                  <small class="text-muted"> {{ item.fcomentario }} </small>
+                </div>
+                <p class="mb-2">
+                  {{ item.comentario }}
+                </p>
+                <div class="comment-actions">
+                  <button class="btn-action" (click)="responder()">Responder</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODULO  DE CANCELACION -->
+<div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmación</h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <table class="table table-hover table-bordered align-middle w-100">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>{{ selectedTicketFromState?.id }}</td>
+            <td>{{ selectedTicketFromState?.titulo }}</td>
+            <td>{{ selectedTicketFromState?.descripcion }}</td>
+          </tbody>
+        </table>
+        <br />
+        <div class="col-md-12">
+          <label class="form-label" ><b>Cerrar Ticket:</b></label>
+          <select class="form-select" (change)="onSelectChange($event)">
+            <option value="">Selecciona una opcion..</option>
+            <option value="RESUELTO">Resuelto</option>
+            <option value="CERRADO">Cerrado</option>
+            <option value="CANCELADO">Cancelado</option>
+          </select>
+        </div>
+
+        <div class="mb-12">
+          <label class="form-label"><b>Ingrese sus Comentarios:</b></label>
+          <textarea class="form-control" [(ngModel)]="descripcion" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmarCancelar(selectedTicketFromState)"
+        >
+          Sí, cancelar
+        </button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">No Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

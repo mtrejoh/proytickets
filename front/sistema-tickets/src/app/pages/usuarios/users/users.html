@@ -1,0 +1,250 @@
+<div class="container-fluid mt-4 px-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3>Administración de usuarios</h3>
+      <p class="text-muted mb-0">Solo accesible para el rol <strong>ADMINISTRADOR</strong>.</p>
+    </div>
+  </div>
+
+  <div class="row gy-4">
+    <div class="col-lg-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">Usuarios registrados</div>
+        <div class="card-body p-0">
+          @if (lstPersonas().length === 0) {
+            <div class="p-3 text-center text-muted">No hay usuarios registrados.</div>
+          }
+
+          @if (lstPersonas().length > 0) {
+            <div class="table-responsive">
+              <table class="table table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Rol Asignado</th>
+                    <th>Nick</th>
+                    <th>Estatus Usuario</th>
+                    <th>Estatus Cuenta</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (usuario of lstPersonas(); track usuario) {
+                    <tr>
+                      <td>{{ usuario.nombre }}</td>
+                      <td>{{ usuario.nombreRol }}</td>
+                      <td>{{ usuario.usuario }}</td>
+                      <td>{{ usuario.estatUsr }}</td>
+                      <td>
+                        <span
+                          class="badge"
+                          [class.bg-success]="usuario.estatus == '1'"
+                          [class.bg-danger]="usuario.estatus == '0'"
+                        >
+                          @if (usuario.estatus === '1') {
+                            ACTIVA
+                          } @else {
+                            INACTIVA
+                          }
+                        </span>
+                      </td>
+                      <td>
+                        <div class="d-flex gap-2">
+                          <button
+                            class="btn {{
+                              !(usuario.usuario === null) ? 'btn-secondary' : 'btn-success'
+                            }}"
+                            (click)="crearUsuario(usuario)"
+                            [disabled]="usuario.usuario !== null"
+                            title="Agregar usuario"
+                          >
+                            <i class="bi bi-person-plus"></i>
+                          </button>
+
+                          <button
+                            class="btn {{
+                              !(usuario.estatus === '1' && usuario.estatUsr === 'ACTIVO')
+                                ? 'btn-secondary'
+                                : 'btn-warning'
+                            }}"
+                            (click)="abrirModalCambiaPass(usuario)"
+                            [disabled]="!(usuario.estatus === '1' && usuario.estatUsr === 'ACTIVO')"
+                            title="Cambiar Password"
+                          >
+                            <i class="bi bi-person-lock"></i>
+                          </button>
+
+                          <button
+                            class="btn {{
+                              !(
+                                usuario.estatus === '1' &&
+                                (usuario.estatUsr === 'ACTIVO' ||
+                                  usuario.estatUsr === 'CHANGE_PASS')
+                              )
+                                ? 'btn-secondary'
+                                : 'btn-primary'
+                            }}"
+                            (click)="cambiaRol(usuario)"
+                            [disabled]="
+                              !(
+                                usuario.estatus === '1' &&
+                                (usuario.estatUsr === 'ACTIVO' ||
+                                  usuario.estatUsr === 'CHANGE_PASS')
+                              )
+                            "
+                            title="Cambiar Permisos"
+                          >
+                            <i class="bi bi-person-lock"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (mostrarModal()) {
+  <div class="modal d-block" style="background: rgba(0, 0, 0, 0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Crear Usuario</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Datos de la persona -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre</label>
+            <div class="form-control-plaintext">
+              {{ personaSeleccionada?.nombre }}
+            </div>
+          </div>
+          <hr />
+
+          <!-- Datos del usuario -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Usuario</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="nuevoUsuario.usuario"
+              name="usuario"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Contraseña</label>
+            <input
+              type="password"
+              class="form-control"
+              [(ngModel)]="nuevoUsuario.password"
+              name="password"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Rol</label>
+
+            <select class="form-select" [(ngModel)]="nuevoUsuario.idRol" name="idRol">
+              <option value="">Seleccione...</option>
+
+              @for (rol of lstRoles(); track rol) {
+                <option [value]="rol.idRol">
+                  {{ rol.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="guardarUsuario()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (mostrarConfirmacion()) {
+  <div class="modal d-block" style="background: rgba(0, 0, 0, 0.5)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cambiar Password de Usuario</h5>
+          <button type="button" class="btn-close" (click)="cerrarModalConfirmacion()"></button>
+        </div>
+
+        <div class="modal-body">
+          ¿Está seguro de habilitar para cambiar el password del usuario<br />
+          <strong>{{ personaSeleccionada?.nombre }}</strong
+          >?
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="cambiaPass()">Confirmar</button>
+          <button class="btn btn-secondary" (click)="cerrarModalConfirmacion()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (mostrarRoles()) {
+  <div class="modal d-block" style="background: rgba(0, 0, 0, 0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cambiar Rol</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            (click)="cerrarRoles()"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Datos de la persona -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre</label>
+            <div class="form-control-plaintext">
+              {{ personaSeleccionada?.nombre }}
+            </div>
+          </div>
+          <hr />
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Rol</label>
+            <select class="form-select" [(ngModel)]="nuevoUsuario.idRol" name="idRol">
+              <option value="">Seleccione ...</option>
+              @for (rol of lstRoles(); track rol) {
+                <option [value]="rol.idRol">
+                  {{ rol.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="cambiarRol()">Cambiar Rol</button>
+          <button type="button" class="btn btn-secondary" (click)="cerrarRoles()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

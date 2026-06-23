@@ -1,0 +1,78 @@
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #000;
+  color: white;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background: #f3f4f6;
+}
+
+.menu a {
+  display: block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.menu a.active {
+  background: #374151;
+}
+
+
+.menu-header{
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+}
+
+.menu-header .btn{
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu-header .btn:hover{
+    color: #ddd;
+}
+
+.menu-header i{
+    cursor: pointer;
+}
+
+
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.content {
+    margin-left: 260px;
+    transition: margin-left .3s ease;
+}
+
+.content.expanded {
+    margin-left: 70px;
+}
+.content.expanded i {
+    font-size: 1em;
+}
+
+.sidebar {
+    flex: 0 0 260px;
+    transition: all .3s;
+}
+
+.sidebar.collapsed {
+    flex: 0 0 70px;
+}
+.content.collapsed i {
+    font-size: 1em;
+}

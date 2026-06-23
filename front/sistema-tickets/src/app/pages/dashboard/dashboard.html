@@ -1,0 +1,38 @@
+<div class="container">
+  <br />
+  <div class="row g-3">
+    @for (item of dataDashboard(); track item) {
+      <div class="col-md-3">
+        <div
+          class="card {{
+            item.estatus === 'ABIERTO'
+              ? 'status-abierto'
+              : item.estatus === 'DESARROLLO'
+                ? 'status-desarrollo'
+                : item.estatus === 'RESUELTO'
+                  ? 'status-instalado'
+                  : item.estatus === 'CERRADO'
+                    ? 'status-cerrado'
+                    : 'status-cancelado'
+          }}"
+        >
+          <div class="card-body">
+            <h5>{{ item.estatus }}</h5>
+            <div class="col-md-4">Tickets</div>
+            <div class="col-md-8">
+              <h2 class="totalDash">{{ item.total }}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <br />
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary" (click)="nuevoTicket()">Nuevo ticket</button>
+    <button class="btn btn-secondary" (click)="verTickets()">Ver tickets</button>
+    @if (currentUserRole === roles.ADMIN) {
+      <button class="btn btn-dark" (click)="verUsuarios()">Usuarios</button>
+    }
+  </div>
+</div>

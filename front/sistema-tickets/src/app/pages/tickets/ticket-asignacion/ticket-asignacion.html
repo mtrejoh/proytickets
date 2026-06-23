@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <h2>Asignar ticket para atención</h2>
+  <p>El ticket ya fue seleccionado en la lista. Confirme la asignación eligiendo el responsable.</p>
+
+  <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="assignment-form">
+    <div class="mb-3">
+      <p><strong>Colaborador asignado:</strong> {{ ticketState?.nomAsignado}}</p>
+      
+      <label class="form-label">Re-Asignar a</label>
+      <select class="form-select" formControlName="asignado">
+        <option value="" disabled>Seleccione una persona</option>
+        @for (usuario of lstUsuarios(); track usuario) {
+          <option [value]="usuario?.idUsuario">
+            {{ usuario?.nombre }}
+          </option>
+        }
+      </select>
+      @if (ticketForm.get('asignado')?.touched && ticketForm.get('asignado')?.invalid) {
+        <small class="text-danger">Debe seleccionar la persona encargada.</small>
+      }
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-secondary" (click)="regresarMenu()">Cancelar</button>
+      <button type="submit" class="btn btn-primary">Asignar ticket</button>
+    </div>
+  </form>
+
+  <div class="card info-card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">[{{ idTicket }}] - Ticket seleccionado</h5>
+      <p><strong>Título:</strong> {{ ticketState?.titulo || 'N/A' }}</p>
+      <p><strong>Descripción breve:</strong> {{ ticketState?.descripcion || 'N/A' }}</p>
+      <p><strong>Prioridad:</strong> {{ ticketState?.prioridad || 'N/A' }}</p>
+      <p><strong>Módulo:</strong> {{ ticketState?.modulo || 'Sin módulo definido' }}</p>
+      <p><strong>Solicitado por:</strong> {{ ticketState?.nomSolicitado || 'Sin módulo definido' }}</p>
+
+      <br />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.collapsed]="collapsed">
+    <app-sidebar [collapsed]="collapsed" (collapsedChange)="collapsed = $event"> </app-sidebar>
+  </aside>
+
+  <!-- CONTENIDO -->
+  <main class="content" [class.expanded]="collapsed">
+    <router-outlet></router-outlet>
+  </main>
+</div>

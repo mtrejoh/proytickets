@@ -1,0 +1,61 @@
+<div class="login-shell">
+  <div class="login-card shadow-sm">
+    <div class="login-header mb-4 text-center">
+      <h2>Ingresar</h2>
+      <p class="text-muted mb-0">Accede a tu cuenta con un tema oscuro y cristal azul.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label text-white-75">Usuario</label>
+        <input
+          #txtTitulo
+          type="text"
+          class="form-control"
+          formControlName="usuario"
+          placeholder="usuario"
+          autofocus
+        />
+      @if (submitted() && f['usuario'].errors) {
+        <div class="form-text text-danger">
+          <span>El usuario es obligatorio.</span>
+        </div>
+      }
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label text-white-75">Contraseña</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="Contraseña"
+        />
+      @if (submitted() && f['password'].errors) {
+        <div class="form-text text-danger">
+          @if (f['password'].errors['required']) {
+            <span>La contraseña es obligatoria.</span>
+          }
+          @if (f['password'].errors['minlength']) {
+            <span>Mínimo 6 caracteres.</span>
+          }
+        </div>
+      }
+      </div>
+
+      @if (loginError()) {
+        <div class="mb-3 text-center">
+          <div class="alert alert-danger py-2 mb-0">{{ loginError() }}</div>
+        </div>
+      }
+
+      <button type="submit" class="btn btn-primary w-100 btn-lg">Entrar</button>
+    </form>
+
+    <div class="login-footer text-center mt-4 text-white-50">
+      <small>Autenticación por servidor:</small>
+      <br />
+      <small>Se envían <strong>usuario</strong> y <strong>password</strong> a <code>http://localhost:8080/usuarios/acceso</code>.</small>
+    </div>
+  </div>
+</div>

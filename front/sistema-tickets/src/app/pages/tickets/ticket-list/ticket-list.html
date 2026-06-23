@@ -1,0 +1,230 @@
+<div class="container-fluid mt-4 px-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <p><b>Usuario: </b>{{cveUsuario}} - {{ nomUsuario }} - {{ currentUserRole }}</p>
+    <h3>Listado de Tickets</h3>
+    <div class="d-flex gap-2">
+      <button
+        class="btn btn-success"
+        title="Nuevo ticket"
+        aria-label="Nuevo ticket"
+        (click)="irANuevoTicket()"
+      >
+        <i class="bi bi-plus-lg"></i>
+        Ticket
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (cargando()) {
+    <div class="alert alert-info">Cargando información...</div>
+  }
+
+  <!-- Sin datos -->
+  @if (tickets().length === 0 && !cargando()) {
+    <div class="alert alert-warning">No existen tickets registrados.</div>
+  }
+
+  @if (tickets().length > 0 && !cargando()) {
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="bi bi-search"></i>
+          </span>
+          <input
+            type="text"
+            class="form-control border-start-0"
+            placeholder="Buscar ticket..."
+            (input)="textoBusqueda.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+    </div>
+  }
+  <!-- Tabla -->
+  @if (tickets().length > 0 && !cargando()) {
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle w-100">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Prioridad</th>
+            <th>Fecha Generado</th>
+            <th>Estado</th>
+            <th>Asignado</th>
+            <th width="180">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticket of ticketsPaginados(); track ticket.idTicket) {
+            <tr>
+              <td>
+                <span class="fw-bold">
+                  {{ ticket.idTicket }}
+                </span>
+              </td>
+              <td>{{ ticket.nomSolicitado }}</td>
+              <td>{{ ticket.titulo }}</td>
+              <td>{{ ticket.descripcion }}</td>
+              <td class="text-center">
+                <span class="badge" [ngClass]="getEstiloPrioridad(ticket.prioridad)">
+                  {{ ticket.prioridad }}
+                </span>
+              </td>
+              <td class="text-center">{{ ticket.creado || '-' }}</td>
+              <td class="text-center">
+                <span
+                  class="ticket-badge"
+                  [ngClass]="{
+                    'status-abierto': ticket.estatus === 'ABIERTO',
+                    'status-desarrollo': ticket.estatus === 'DESARROLLO',
+                    'status-instalado': ticket.estatus === 'RESUELTO',
+                    'status-cerrado': ticket.estatus === 'CERRADO',
+                  }"
+                >
+                  <i
+                    class="bi"
+                    [ngClass]="{
+                      'bi-play-circle-fill': ticket.estatus === 'ABIERTO',
+                      'bi-code-slash': ticket.estatus === 'DESARROLLO',
+                      'bi-cloud-check-fill': ticket.estatus === 'RESUELTO',
+                      'bi-check-circle-fill': ticket.estatus === 'CERRADO',
+                    }"
+                  ></i>
+                  {{ ticket.estatus }}
+                </span>
+              </td>
+
+              <td>
+                <span [ngClass]="ticket.asignado ? 'badge bg-success text-white' : 'text-body'">
+                  {{ ticket.asignado || 'Sin asignar' }}
+                </span>
+              </td>
+
+              <td>
+                <div class="d-flex gap-2">
+                    <button
+                      class="btn btn-primary btn-sm"
+                      title="Ver ticket"
+                      aria-label="Ver ticket"
+                      (click)="seleccionarTicket(ticket)"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  
+                  @if (currentUserRole === roles.ADMIN) {
+                    <button
+                      class="btn btn-sm {{ ticket.estatus !== 'ABIERTO' ? 'btn-secondary' : 'btn-success' }} "
+                      title="Asignar ticket {{ ticket.codigo }}"
+                      aria-label="Asignar ticket {{ ticket.codigo }}"
+                      (click)="asignarTicket(ticket)"
+                      [disabled]="ticket.estatus !== 'ABIERTO'"
+                    >
+                      <i class="bi bi-person-badge"></i>
+                      Asignar
+                    </button>
+                  }
+                  <button
+                    class="btn {{ ticket.estatus === 'CANCELADO' ? 'btn-secondary' : 'btn-warning' }}"
+                    (click)="seleccionarTicketCancelar(ticket)"
+                    [disabled]="ticket.estatus === 'CANCELADO'"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Paginador -->
+  @if (tickets().length > 0) {
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <div>
+        Mostrando
+        {{ ticketsPaginados().length }}
+        de
+        {{ tickets().length }}
+        registros
+      </div>
+
+      <div class="d-flex gap-2">
+        <button
+          class="btn btn-outline-primary"
+          (click)="cambiarPagina(paginaActual() - 1)"
+          [disabled]="paginaActual() === 1"
+        >
+          Anterior
+        </button>
+
+        <span class="align-self-center">
+          Página
+          {{ paginaActual() }}
+          de
+          {{ totalPaginas() }}
+        </span>
+
+        <button
+          class="btn btn-outline-primary"
+          (click)="cambiarPagina(paginaActual() + 1)"
+          [disabled]="paginaActual() === totalPaginas()"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmación</h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        ¿Desea cancelar el ticket de atenci&oacute;n?.
+        <table class="table table-hover table-bordered align-middle w-100">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <td>{{ ticketSeleccionado?.idTicket }}</td>
+            <td>{{ ticketSeleccionado?.titulo }}</td>
+            <td>{{ ticketSeleccionado?.descripcion }}</td>
+          </tbody>
+        </table>
+
+        <div class="mb-3">
+          <label class="form-label">Comentarios de la Cancelacion</label>
+          <textarea class="form-control" [(ngModel)]="descripcion" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmarCancelar(ticketSeleccionado)">
+          Sí, cancelar
+        </button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">No Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

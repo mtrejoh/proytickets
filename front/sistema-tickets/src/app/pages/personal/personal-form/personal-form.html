@@ -1,0 +1,62 @@
+<div class="container-fluid mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-person-vcard"></i>
+
+            {{ titulo }}
+          </h4>
+        </div>
+
+        <div class="card-body">
+          <form [formGroup]="form">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold"> Nombre </label>
+                <input type="text" class="form-control" maxlength="100" formControlName="nombre" />
+                @if (form.controls.nombre.touched && form.controls.nombre.invalid) {
+                  <div class="text-danger mt-1">El nombre es obligatorio.</div>
+                }
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold"> Apellido Paterno </label>
+                <input type="text" class="form-control" maxlength="100" formControlName="app" />
+                @if (form.controls.app.touched && form.controls.app.invalid) {
+                  <div class="text-danger mt-1">El apellido paterno es obligatorio.</div>
+                }
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold"> Apellido Materno </label>
+                <input type="text" class="form-control" maxlength="100" formControlName="apm" />
+                @if (form.controls.apm.touched && form.controls.apm.invalid) {
+                  <div class="text-danger mt-1">El apellido materno es obligatorio.</div>
+                }
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label fw-bold"> Estatus </label>
+              <select class="form-select" formControlName="estatus">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <div class="card-footer text-end">
+          <button class="btn btn-secondary me-2" (click)="cancelar()">Cancelar</button>
+
+          <button class="btn btn-primary" [disabled]="form.invalid" (click)="guardar()">
+            <i class="bi bi-floppy"></i>
+
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

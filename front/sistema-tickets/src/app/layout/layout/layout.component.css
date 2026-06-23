@@ -1,0 +1,20 @@
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:260px;
+    transition:width .3s ease;
+    overflow:hidden;
+    background-color: #000;
+}
+
+.sidebar.collapsed{
+    width:70px;
+}
+
+.content{
+    flex:1;
+    transition:margin-left .3s ease;
+}

@@ -1,0 +1,68 @@
+<nav class="menu">
+  <!-- Cabecera -->
+  <div class="menu-header">
+    <button
+      type="button"
+      class="btn btn-link text-white p-0"
+      (click)="toggleSidebar()"
+      aria-label="Mostrar/Ocultar menú"
+    >
+      <i class="bi fs-3" [class.bi-list]="collapsed" [class.bi-x-lg]="!collapsed"> </i>
+    </button>
+
+    @if (!collapsed) {
+      <span class="ms-2 fw-bold">Sistema</span>
+    }
+  </div>
+
+  @for (item of menu; track item.route) {
+    @if (!item.role || item.role === currentUserRole) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i [class]="item.icon + ' me-2'"></i>
+
+        @if (!collapsed) {
+          {{ item.text }}
+        }
+      </a>
+    }
+  }
+
+  <hr />
+
+  <a
+    href="#"
+    class="menu-link"
+    (click)="mostrarModalSalir = true"
+    data-bs-toggle="modal"
+    data-bs-target="#modalSalir"
+    routerLinkActive="active"
+  >
+    <i class="bi bi-box-arrow-right me-2"></i>
+    @if (!collapsed) {
+      Cerrar sesión
+    }
+  </a>
+</nav>
+
+<!-- Modal Salir -->
+<div class="modal fade" id="modalSalir" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmación de cierre</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">¿Está seguro que desea salir de la aplicación?</div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="confirmarSalir()">Sí, salir</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

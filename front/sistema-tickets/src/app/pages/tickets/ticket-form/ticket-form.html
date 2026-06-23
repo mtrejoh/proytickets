@@ -1,0 +1,121 @@
+<form [formGroup]="ticketForm" (ngSubmit)="createTicket()" class="container mt-4">
+  <h2>Nuevo Ticket - (Issue/Error/Mejora)</h2>
+
+  <div class="row g-4">
+    <!-- ACTIVIDADES -->
+    <div class="col-lg-8">
+      <div class="info-card h-100">
+        <!-- Prioridad -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Prioridad</label>
+          <select class="form-select" formControlName="prioridad">
+            <option value="BAJA">Baja</option>
+            <option value="NORMAL">Normal</option>
+            <option value="MEDIA">Media</option>
+            <option value="ALTA">Alta</option>
+            <option value="CRITICA">Crítica</option>
+          </select>
+        </div>
+
+        <!-- Módulo -->
+        <div class="mb-3">
+          <label class="form-label">Opción en el Menú</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="opcionmenu"
+            placeholder="Ejemplo: Administracion -> Procesos -> Reporte"
+          />
+          @if (ticketForm.get('opcionmenu')?.touched && ticketForm.get('opcionmenu')?.invalid) {
+            <small class="text-danger">La opción en el menú es obligatoria.</small>
+          }
+        </div>
+
+        <!-- Título -->
+        <div class="mb-3">
+          <label class="form-label">Título del Problema</label>
+          <input type="text" class="form-control" formControlName="title" />
+          @if (ticketForm.get('title')?.touched && ticketForm.get('title')?.invalid) {
+            <small class="text-danger">El título debe tener al menos 5 caracteres.</small>
+          }
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-control" formControlName="description" rows="3"></textarea>
+          @if (ticketForm.get('description')?.touched && ticketForm.get('description')?.invalid) {
+            <small class="text-danger">La descripción es obligatoria.</small>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN -->
+    <div class="col-lg-4">
+      <div class="info-card">
+        <h5 class="section-title">Información Usuario</h5>
+        <table class="table table-borderless align-middle mb-0">
+          <tbody>
+            <tr>
+              <td class="label-column">Colaborador</td>
+              <td>{{ this.creador + ' ' + nomcreador }}</td>
+            </tr>
+            <tr>
+              <td class="label-column">Fecha Ticket</td>
+              <td>{{ fechaActual | date: 'dd/MM/yyyy hh:mm:ss' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <br /><br />
+        <div class="row">
+          <!-- Adjuntar archivo -->
+          <div class="mb-3">
+            <label class="form-label"
+              ><b>Adjuntar archivo (opcional)</b><br />
+              (zip, tar, tar.gz, rar)</label
+            >
+            <input
+              type="file"
+              class="form-control"
+              (change)="onFileChange($event)"
+              accept=".zip, .tar, .tar.gz, .rar"
+            />
+            <small class="text-muted">El archivo es opcional para enviar el ticket.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="mt-3 d-flex gap-2">
+    <button type="button" class="btn btn-success" (click)="regresarMenu()">Regresar</button>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </div>
+</form>
+
+<div class="modal fade" id="modalError" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmación</h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Ocurrio un error a intentar crear el ticket, por favor intente nuevamente.
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="createTicket()">
+          Entendido
+        </button>
+        <button type="button" class="btn btn-danger">
+          No, volver a intentar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

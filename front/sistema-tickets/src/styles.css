@@ -1,0 +1,163 @@
+:root {
+  color-scheme: light;
+  background-color: #fff;
+  color: #212529;
+}
+
+html, body {
+  min-height: 100%;
+  background-color: #fff;
+  color: #212529;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #fff;
+  color: #212529;
+}
+
+.container,
+.container-fluid,
+.table-responsive,
+.card,
+.modal-content,
+.info-card,
+.comment-item,
+.comment-content,
+.comment-actions,
+.ticket-badge {
+  background-color: #fff;
+  color: #212529;
+}
+
+.card,
+.modal-content,
+.info-card,
+.comment-item,
+.comment-content {
+  border-color: #dee2e6;
+}
+
+.table {
+  color: #212529;
+  border-color: #dee2e6;
+}
+
+.table th,
+.table td {
+  border-color: #dee2e6;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.form-control,
+.form-select,
+.input-group-text,
+textarea.form-control {
+  background-color: #fff;
+  color: #212529;
+  border-color: #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea.form-control:focus {
+  background-color: #fff;
+  color: #212529;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+  background-color: #1f6feb;
+  border-color: #1f6feb;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+.btn-light {
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+  color: #212529;
+}
+
+.alert {
+  background-color: #e9ecef;
+  color: #212529;
+  border-color: #ced4da;
+}
+
+.ticket-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  user-select: none;
+}
+
+/* Hover */
+.ticket-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* ===== ABIERTO ===== */
+.status-abierto {
+  background: #4A90E2;
+  color: #0f5132;
+  border-color: #badbcc;
+}
+
+/* ===== DESARROLLO ===== */
+.status-desarrollo {
+  background: #F5A623;
+  color: #084298;
+  border-color: #b6d4fe;
+}
+
+/* ===== INSTALADO ===== */
+.status-instalado {
+  background: #50E3C2;
+  color: #055160;
+  border-color: #99d6e8;
+}
+
+/* ===== CERRADO ===== */
+.status-cerrado {
+  background: #B8B8B8;
+  color: #292c31;
+  border-color: #dfe0e4;
+}
+/** ==== CANCELADO ==== */
+.status-cancelado {
+  background: #585c60;
+  color: #bec9d3;
+  border-color: #dfe0e4;
+}
+.ticket-resumen-header {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+h2.totalDash {
+  text-align: right;
+}
